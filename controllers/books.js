@@ -17,7 +17,7 @@ exports.createBook = (req, res, next) => {
     .catch(error => { res.status(400).json( { error })})
  };
 
- exports.modifyBook = (req, res, next) => {
+exports.modifyBook = (req, res, next) => {
     const bookObject = req.file ? {
         ...JSON.parse(req.body.book),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -39,7 +39,7 @@ exports.createBook = (req, res, next) => {
         });
  };
 
- exports.deleteBook = (req, res, next) => {
+exports.deleteBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id})
         .then(book => {
             if (book.userId != req.auth.userId) {

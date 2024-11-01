@@ -22,27 +22,35 @@ exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {
             if (!user) {
-                return res.status(401).json({ message: 'Paire login/mot de passe incorrecte'});
+                console.log("Utilisateur non trouvé");
+                return res.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
             }
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     if (!valid) {
+                        console.log("Mot de passe incorrect");
                         return res.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
                     }
+                    
+                    const token = jwt.sign(
+                        { userId: user._id },  
+                        'RANDOM_TOKEN_SECRET',
+                        { expiresIn: '24h' }
+                    );
+
+                    console.log("Token généré:", token);
                     res.status(200).json({
-                        userId: user.id,
-                        token: jwt.sign(
-                            { userId: user.id},
-                            'RANDOM_TOKEN_SECRET',
-                            {expiresIn: '24h' }
-                        )
+                        userId: user._id,  
+                        token: token
                     });
                 })
                 .catch(error => {
-                    console.log(error)
-                    res.status(500).json({ error })
-                    
+                    console.error("Erreur lors de la comparaison des mots de passe:", error);
+                    res.status(500).json({ error });
                 });
         })
-        .catch(error => res.status(500).json({ error }));
- };
+        .catch(error => {
+            console.error("Erreur lors de la recherche de l'utilisateur:", error);
+            res.status(500).json({ error });
+        });
+};
