@@ -9,8 +9,8 @@ const sharpMiddleware = require('../middleware/sharp');
 
 router.put('/:id', auth, multer, sharpMiddleware, bookCtrl.modifyBook);
 router.delete('/:id', auth, bookCtrl.deleteBook);
-router.get('/:id', auth, bookCtrl.getOneBook);
-router.get('/', auth, bookCtrl.getAllBook);
+router.get('/:id', bookCtrl.getOneBook);
+router.get('/', bookCtrl.getAllBook);
 router.post('/', auth, multer, sharpMiddleware, bookCtrl.createBook);
 
 module.exports = router;
