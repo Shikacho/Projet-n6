@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
 
     try {
         const token = authHeader.split(' ')[1];
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const decodedToken = jwt.verify(token, process.env.TOKEN);
         req.auth = { userId: decodedToken.userId };
         console.log("Utilisateur authentifié avec ID :", decodedToken.userId);
         next();
